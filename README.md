@@ -1,2 +1,11 @@
 # Pokemon_Battle-C
-a pokemon battle made between the user and the computer
+## Participantes do Grupo
+
+- Nome: [Nome do Participante 1]
+  - Matrícula: [Matrícula do Participante 1]
+
+- Nome: [Nome do Participante 2]
+  - Matrícula: [Matrícula do Participante 2]
+
+- Nome: [Nome do Participante 3] (se aplicável)
+  - Matrícula: [Matrícula do Participante 3]
