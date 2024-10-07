@@ -2,13 +2,13 @@
 CCP230/CC2632 T.010.610 / Projeto 2 
 ## Participantes do Grupo
 
-- Nome: [João Guilherme Faber]
+- Nome: João Guilherme Faber
   - RA: 24.124.060-7
 
-- Nome: [Murilo Passarelli ]
+- Nome: Murilo Passarelli 
   - RA: 24.124.041-5
 
-- Nome: [Gabriel Furlani ]
+- Nome: Gabriel Furlani 
   - RA: 24.124.062-1
 
 
