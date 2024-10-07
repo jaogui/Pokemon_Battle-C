@@ -39,10 +39,10 @@ Para compilar e executar o projeto, siga os seguintes passos:
     gcc -o batalha_pokemon main.c batalha.c pokemon.c
     ```
 
-5. Execute o programa:
+5. De o Push no código:
 
     ```sh
-    ./batalha_pokemon
+    git push -u origin master
     ```
 
 ## Forma de Uso
