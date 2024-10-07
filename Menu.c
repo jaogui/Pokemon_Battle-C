@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h> // Para usar sleep() (apaga esse comentario depois de finalizar o MENU)
-// Definicões de cores para o terminal (USE SEMPRE O RESETAR DEPOIS )
+#include <unistd.h> // Para usar sleep()
+
+// Definicoes de cores para o terminal (USE SEMPRE O RESETAR DEPOIS)
 #define Resetar "\033[0m"
 #define Vermelho "\033[31m"
 #define Verde "\033[32m"
@@ -28,15 +29,15 @@ void linhaDeCarregamento() {
 
 // Funcao para mostrar o menu de boas-vindas e perguntar o nome
 void boasVindas(Jogador *jogador) {
-    printf(Negrito CYAN "Bem-vindo ao mundo de Pokemon!" Resetar "\n");
-    printf("Vamos comecar. Primeiro, você precisa falar com uma pessoa, so um momento.\n");
+    printf(Negrito Azul "Bem-vindo ao mundo de Pokemon!" Resetar "\n");
+    printf("Vamos comecar. Primeiro, voce precisa falar com uma pessoa, so um momento.\n");
     linhaDeCarregamento();
-    printf(YELLOW "...\n...\n...\n" Resetar);
-    printf(Roxo "Ola, sou o professor Rowan, parece que você acabou de chegar em Sinnoh." Resetar "\n");
+    printf(Roxo "...\n...\n...\n" Resetar);
+    printf(Roxo "Ola, sou o professor Rowan, parece que voce acabou de chegar em Sinnoh." Resetar "\n");
     printf("Para comecar, por favor, me diga o seu nome: ");
     fgets(jogador->nome, 50, stdin);
     jogador->nome[strcspn(jogador->nome, "\n")] = 0; // Remover a nova linha capturada pelo fgets
-    printf(Verde "\notimo, %s! Prazer em conhecê-lo!\n" Resetar, jogador->nome);
+    printf(Verde "\nOtimo, %s! Prazer em conhece-lo!\n" Resetar, jogador->nome);
 }
 
 // Funcao para escolher o Pokemon inicial
@@ -47,10 +48,10 @@ void escolherPokemon(Jogador *jogador) {
         printf("\n%s, agora escolha seu Pokemon inicial. Lembre-se, ele sera seu companheiro para uma longa jornada cheia de aventuras!\n", jogador->nome);
         printf(Azul "1. Chimchar\n" Resetar);
         printf(Verde "2. Turtwig\n" Resetar);
-        printf(CYAN "3. Piplup\n" Resetar);
+        printf(Roxo "3. Piplup\n" Resetar);
         printf(Negrito "Escolha um companheiro (1-3): " Resetar);
         scanf("%d", &escolha);
-        getchar(); 
+        getchar();  // Consumir o '\n' deixado pelo scanf
 
         switch (escolha) {
             case 1:
@@ -68,7 +69,7 @@ void escolherPokemon(Jogador *jogador) {
         }
     } while (escolha == 0);
 
-    printf(Verde "\nParabens, %s! Você escolheu %s como seu primeiro Pokemon, excelente escolha!\n" Resetar, jogador->nome, jogador->pokemonEscolhido);
+    printf(Verde "\nParabens, %s! Voce escolheu %s como seu primeiro Pokemon, excelente escolha!\n" Resetar, jogador->nome, jogador->pokemonEscolhido);
 }
 
 // Funcao para salvar os dados do jogador em um arquivo binario
