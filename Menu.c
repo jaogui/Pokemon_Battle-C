@@ -1,35 +1,56 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h> // Para usar sleep() (apaga esse comentario depois de finalizar o MENU)
+// Definicões de cores para o terminal (USE SEMPRE O RESETAR DEPOIS )
+#define Resetar "\033[0m"
+#define Vermelho "\033[31m"
+#define Verde "\033[32m"
+#define Azul "\033[34m"
+#define Roxo "\033[35m"
+#define Negrito "\033[1m"
 
-// Estrutura para armazenar o jogador e seu Pokémon escolhido
+// Estrutura para armazenar o jogador e seu Pokemon escolhido
 typedef struct {
     char nome[50];
     char pokemonEscolhido[20];
 } Jogador;
 
-// Função para mostrar o menu de boas-vindas e perguntar o nome
-void boasVindas(Jogador *jogador) {
-    printf("Bem-vindo ao mundo de Pokemon, vamos comecar. Primeiro voce precisa falar com uma pessoa, so um momento.\n");
-    printf("...\n");
-    printf("...\n");
-    printf("...\n");
-    printf("Ola, sou o professor Rowan, parece que voce acabou de chegar em Sinnoh, para comecar por favor, me diga o seu nome: ");
-    fgets(jogador->nome, 50, stdin);
-    jogador->nome[strcspn(jogador->nome, "\n")] = 0; // Remover a nova linha capturada pelo fgets
+// Funcao para mostrar uma linha de carregamento
+void linhaDeCarregamento() {
+    printf(Verde "Carregando" Resetar);
+    for (int i = 0; i < 3; i++) {
+        printf(".");
+        fflush(stdout);
+        sleep(1);
+    }
+    printf("\n");
 }
 
-// Função para escolher o Pokémon inicial
+// Funcao para mostrar o menu de boas-vindas e perguntar o nome
+void boasVindas(Jogador *jogador) {
+    printf(Negrito CYAN "Bem-vindo ao mundo de Pokemon!" Resetar "\n");
+    printf("Vamos comecar. Primeiro, você precisa falar com uma pessoa, so um momento.\n");
+    linhaDeCarregamento();
+    printf(YELLOW "...\n...\n...\n" Resetar);
+    printf(Roxo "Ola, sou o professor Rowan, parece que você acabou de chegar em Sinnoh." Resetar "\n");
+    printf("Para comecar, por favor, me diga o seu nome: ");
+    fgets(jogador->nome, 50, stdin);
+    jogador->nome[strcspn(jogador->nome, "\n")] = 0; // Remover a nova linha capturada pelo fgets
+    printf(Verde "\notimo, %s! Prazer em conhecê-lo!\n" Resetar, jogador->nome);
+}
+
+// Funcao para escolher o Pokemon inicial
 void escolherPokemon(Jogador *jogador) {
     int escolha = 0;
 
     do {
-        printf("\nMuito bem, %s! Agora escolha seu Pokemon inicial, lembre-se, ele sera seu companheiro para uma longa jornada repleta de aventuras.\n", jogador->nome);
-        printf("1. Chimchar\n");
-        printf("2. Turtwig\n");
-        printf("3. Piplup\n");
-        printf("Escolha um companheiro (1-3): ");
+        printf("\n%s, agora escolha seu Pokemon inicial. Lembre-se, ele sera seu companheiro para uma longa jornada cheia de aventuras!\n", jogador->nome);
+        printf(Azul "1. Chimchar\n" Resetar);
+        printf(Verde "2. Turtwig\n" Resetar);
+        printf(CYAN "3. Piplup\n" Resetar);
+        printf(Negrito "Escolha um companheiro (1-3): " Resetar);
         scanf("%d", &escolha);
-        getchar();  // Consumir o '\n' deixado pelo scanf
+        getchar(); 
 
         switch (escolha) {
             case 1:
@@ -42,30 +63,29 @@ void escolherPokemon(Jogador *jogador) {
                 strcpy(jogador->pokemonEscolhido, "Piplup");
                 break;
             default:
-                printf("Escolha invalida! Por favor, escolha novamente.\n");
+                printf(Vermelho "Escolha invalida! Por favor, escolha novamente.\n" Resetar);
                 escolha = 0;  
         }
     } while (escolha == 0);
 
-    printf("\nParabens, %s! Você escolheu %s como seu primeiro Pokemon, boa escolha!\n", jogador->nome, jogador->pokemonEscolhido);
+    printf(Verde "\nParabens, %s! Você escolheu %s como seu primeiro Pokemon, excelente escolha!\n" Resetar, jogador->nome, jogador->pokemonEscolhido);
 }
 
-// Função para salvar os dados do jogador em um arquivo binário
+// Funcao para salvar os dados do jogador em um arquivo binario
 void salvarJogador(Jogador *jogador) {
     FILE *arquivo = fopen("jogador.bin", "wb"); 
     if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo para salvar os dados.\n");
+        printf(Vermelho "Erro ao abrir o arquivo para salvar os dados.\n" Resetar);
         return;
     }
 
-    // Escrever os dados da estrutura no arquivo
     fwrite(jogador, sizeof(Jogador), 1, arquivo);
     fclose(arquivo);
 
-    printf("\nDados salvos com sucesso!\n");
+    printf(Verde "\nDados salvos com sucesso!\n" Resetar);
 }
 
-// Função principal
+// Funcao principal
 int main() {
     Jogador jogador;
 
