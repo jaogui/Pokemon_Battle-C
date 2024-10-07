@@ -14,13 +14,17 @@ CCP230/CC2632 T.010.610 / Projeto 2
 
 ## Objetivo do Projeto
 
-
-
+O objetivo desse projet é aprimorar as habilidades com a linguagem C de uma forma animada e interativa com o grupo, juntando os interesses em comum nós iremos criar uma batalha pokemon entre o usuario e a máquina, com o usuário podendo escolher uma variedade de 3 pokemons que são os inicias da quarta geração, e entrando em uma batalha contra o oponente que é o computador podendo escolher entre 3 habilidades.
+O Projeto tem as seguintes regras:
+- seu projeto deve armazenar dados em arquivos binários e texto simples (não precisam armazenar a mesma informação e cada tipo de arquivo pode ser usado para coisas diferentes)
+- seu projeto deve usar arrays, structs e ponteiros para armazenar e gerenciar informações do seu programa
+- so do GitHub Workflow e branches para cada funcionalidade do projeto
+- README.md contendo descrição do projeto, como compilar e executar
 ## Compilação e Execução
 
 Para compilar e executar o projeto, siga os seguintes passos:
 
-1. Certifique-se de que você tem um compilador C instalado. Recomendo o `gcc`.
+1. Certifique-se de que você tem um compilador C instalado.
 2. Clone o repositório para o seu computador:
 
     ```sh
@@ -38,8 +42,12 @@ Para compilar e executar o projeto, siga os seguintes passos:
     ```sh
     gcc -o batalha_pokemon main.c batalha.c pokemon.c
     ```
+5. De o Comit no código:
 
-5. De o Push no código:
+   ```sh
+   git commit -m "Primeiro commit na branch master"
+   ```
+7. De o Push no código:
 
     ```sh
     git push -u origin master
