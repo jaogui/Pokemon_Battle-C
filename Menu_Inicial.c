@@ -13,19 +13,21 @@ typedef enum {FOGO, AGUA, PLANTA} Tipo;
 #define Verde "\033[32m"
 #define Azul "\033[34m"
 #define Roxo "\033[35m"
+#define Ciano "\033[36m"
+#define Cinza "\033[30m"
 #define Negrito "\033[1m"
 
 // Struct com todos os dados do jogador e de seu pokemon
-typedef struct {
+typedef struct{
     char nome[50];
     int vida;
     int ataque;
-    int ataque_especial; 
-    int quant_ataque_especial; 
+    int ataque_especial;
+    int quant_ataque_especial;
     int cura;
     int quant_cura;
     Tipo tipo;
-} Pokemon;
+}Pokemon;
 
 // Pokemons disponiveis
 Pokemon pokemons[3] = {
@@ -35,19 +37,32 @@ Pokemon pokemons[3] = {
 };
 
 // Estrutura para armazenar o jogador e seu pokemon escolhido
-typedef struct {
+typedef struct{
     char nome[50];
     char jogador_pokemon[50];
 }Jogador;
 
 void linhaDeCarregamento(){
-    printf(Verde "Carregando" Resetar);
-    for (int i = 0; i < 3; i++){
-        printf(Verde "." Resetar);
+    printf(Ciano "Carregando" Resetar);
+    for (int i = 0; i < 3; i++) {
+        printf(Ciano "." Resetar);
         fflush(stdout);
         sleep(1);
     }
     printf("\n");
+}
+
+const char *cor_pokemon(Pokemon pokemon){
+    switch (pokemon.tipo){
+    case FOGO:
+        return Negrito Vermelho;
+    case PLANTA:
+        return Negrito Verde;
+    case AGUA:
+        return Negrito Azul;
+    default:
+        return Resetar;
+    }
 }
 
 // Verifica se o jogador ja jogou antes
@@ -59,36 +74,34 @@ int verificarJogadorExistente(Jogador *jogador){
     }
 
     while(fread(&jogadorExistente, sizeof(Jogador), 1, arquivo)){
-        printf("Lendo jogador: %s, Pokemon: %s\n" Resetar, jogadorExistente.nome, jogadorExistente.jogador_pokemon); //Apagar futuramente
-
         if(strcmp(jogadorExistente.nome, jogador->nome) == 0){
             strcpy(jogador->jogador_pokemon, jogadorExistente.jogador_pokemon);
             fclose(arquivo);
 
-            return 1; 
+            return 1;
         }
     }
 
     fclose(arquivo);
-    return 0; 
+    return 0;
 }
 
 // Função para mostrar o menu de boas vindas e perguntar o nome
 void boasVindas(Jogador *jogador){
     printf(Negrito Azul "Bem-vindo ao mundo de Pokemon!" Resetar "\n");
-    printf(Negrito Azul"Vamos comecar. Primeiro, voce precisa falar com uma pessoa, so um momento.\n");
+    printf(Negrito Azul "Vamos comecar. Primeiro, voce precisa falar com uma pessoa, so um momento.\n");
     linhaDeCarregamento();
     printf(Roxo "...\n" Resetar);
     printf(Roxo "Ola, sou o professor %sRowan%s, parece que voce acabou de chegar em Sinnoh." Resetar "\n", Resetar, Roxo);
-    printf(Roxo "Para comecar, por favor, me diga o seu nome: "Resetar);
+    printf(Roxo "Para comecar, por favor, me diga o seu nome: " Resetar);
     fgets(jogador->nome, 50, stdin);
-    jogador->nome[strcspn(jogador->nome, "\n")] = 0; 
+    jogador->nome[strcspn(jogador->nome, "\n")] = 0;
 }
 
 // Função para escolher o pokemon inicial
 void escolherPokemon(Jogador *jogador){
     int escolha = 0;
-    char cor[20];
+    char cor_j[20];
 
     do{
         printf(Roxo "\nOtimo, %s%s!%s Prazer em conhece-lo!\n" Resetar, Resetar, jogador->nome, Roxo);
@@ -98,33 +111,33 @@ void escolherPokemon(Jogador *jogador){
         printf(Negrito Azul "3. Piplup\n" Resetar);
         printf(Negrito "Escolha um companheiro (1-3): " Resetar);
         scanf("%d", &escolha);
-        getchar();  
+        getchar();
 
-        switch(escolha){
+        switch (escolha) {
             case 1:
                 strcpy(jogador->jogador_pokemon, "Chimchar");
-                strcpy(cor, Negrito Vermelho "");
+                strcpy(cor_j, Negrito Vermelho "");
                 break;
             case 2:
                 strcpy(jogador->jogador_pokemon, "Turtwig");
-                strcpy(cor, Negrito Verde "");
+                strcpy(cor_j, Negrito Verde "");
                 break;
             case 3:
                 strcpy(jogador->jogador_pokemon, "Piplup");
-                strcpy(cor, Negrito Azul "");
+                strcpy(cor_j, Negrito Azul "");
                 break;
             default:
                 printf(Vermelho "Escolha invalida! Por favor, escolha novamente.\n" Resetar);
-                escolha = 0;  
+                escolha = 0;
         }
     }while(escolha == 0);
 
-    printf(Roxo "\nParabens, %s%s!%s Voce escolheu %s%s%s como seu primeiro Pokemon, excelente escolha!\n" Resetar, Resetar, jogador->nome, Roxo, cor, jogador->jogador_pokemon, Resetar Roxo);
+    printf(Roxo "\nParabens, %s%s!%s Voce escolheu %s%s%s como seu primeiro Pokemon, excelente escolha!" Resetar, Resetar, jogador->nome, Roxo, cor_j, jogador->jogador_pokemon, Resetar Roxo);
 }
 
 // Função para salvar os dados do jogador em um arquivo binario
 void salvarJogador(Jogador *jogador){
-    FILE *arquivo = fopen("jogador.bin", "ab"); 
+    FILE *arquivo = fopen("jogador.bin", "ab");
     if(arquivo == NULL){
         printf("Erro ao abrir o arquivo para salvar os dados.\n");
         return;
@@ -141,6 +154,8 @@ Pokemon escolher_oponente_pokemon(Pokemon jogador_pokemon){
         oponente_pokemon = pokemons[rand() % 3];
     }while(strcmp(oponente_pokemon.nome, jogador_pokemon.nome) == 0);
 
+    printf(Roxo "\nSeu rival e amigo de infancia %sBarry%s escolheu %s%s%s como seu parceiro!" Resetar, Negrito Cinza, Resetar Roxo, cor_pokemon(oponente_pokemon), oponente_pokemon.nome, Resetar Roxo);
+
     return oponente_pokemon;
 }
 
@@ -149,14 +164,41 @@ Pokemon link_jogador_pokemon(Jogador *jogador){
     Pokemon jogador_pokemon;
 
     for(int i = 0; i < sizeof(pokemons) / sizeof(pokemons[0]); i++){
-        if(strcmp(jogador->jogador_pokemon, pokemons[i].nome) == 0){
-            jogador_pokemon = pokemons[i];
-            return jogador_pokemon;
+        if (strcmp(jogador->jogador_pokemon, pokemons[i].nome) == 0){
+        jogador_pokemon = pokemons[i];
+        return jogador_pokemon;
         }
     }
 
     Pokemon vazio = {"", 0, 0, 0, 0, 0, 0, FOGO};
     return vazio;
+}
+
+// Batalha
+int batalha(Pokemon jogador_pokemon, Pokemon oponente_pokemon){
+    const char *cor_j = cor_pokemon(jogador_pokemon);
+    const char *cor_o = cor_pokemon(oponente_pokemon);
+
+    printf(Negrito Cinza"\n\nBarry%s te desafia para uma batalha pokemon! Vamos Lutar!\n" Resetar, Resetar);
+    linhaDeCarregamento();
+    printf("\nRival %sBarry%s manda %s%s%s para batalhar!" Resetar, Negrito Cinza, Resetar, cor_o, oponente_pokemon.nome, Resetar);
+    printf("\nVoce manda %s%s%s!" Resetar, cor_j, jogador_pokemon.nome, Resetar);
+
+  // Codigo da batalha
+  //
+  //
+  //
+  // Fim da batalha
+    for(int i = 0; i < sizeof(pokemons) / sizeof(pokemons[0]); i++){ // Recuperar a vida dos pokemons depois da batalha
+        if(strcmp(jogador_pokemon.nome, pokemons[i].nome) == 0){
+            jogador_pokemon.vida = pokemons[i].vida;
+        }
+        if(strcmp(oponente_pokemon.nome, pokemons[i].nome) == 0){
+            oponente_pokemon.vida = pokemons[i].vida;
+        }
+    }
+
+    return 0; // Temporario para testes
 }
 
 // Função principal
@@ -165,43 +207,45 @@ int main(){
 
     Jogador jogador;
     Pokemon jogador_pokemon;
-    
-    boasVindas(&jogador);     
-    
+
+    boasVindas(&jogador);
+
     // Verificar se jogador já existe
     if(verificarJogadorExistente(&jogador)){
-        jogador_pokemon = link_jogador_pokemon(&jogador); 
-        
-        char cor[20];
-        switch(jogador_pokemon.tipo){
-            case FOGO:
-                strcpy(cor, Negrito Vermelho "");
-                break;
-            case PLANTA:
-                strcpy(cor, Negrito Verde "");
-                break;
-            case AGUA:
-                strcpy(cor, Negrito Azul "");
-                break;
-        }
-        
-        printf(Roxo "Bem-vindo de volta, %s%s!%s Seu Pokemon %s%s%s estava esperando por voce!\n" Resetar, Resetar, jogador.nome, Roxo, cor, jogador.jogador_pokemon, Resetar Roxo);
+        jogador_pokemon = link_jogador_pokemon(&jogador);
+
+        printf(Roxo "\nBem-vindo de volta, %s%s!%s Seu Pokemon %s%s%s estava esperando por voce!" Resetar, Resetar, jogador.nome, Roxo, cor_pokemon(jogador_pokemon),jogador.jogador_pokemon, Resetar Roxo);
     }else{
-        escolherPokemon(&jogador); 
-        salvarJogador(&jogador);   
-        jogador_pokemon = link_jogador_pokemon(&jogador); 
-    }    
+        escolherPokemon(&jogador);
+        salvarJogador(&jogador);
+        jogador_pokemon = link_jogador_pokemon(&jogador);
+    }
 
     if(strlen(jogador_pokemon.nome) == 0){
         printf("Erro: Pokemon do jogador nao encontrado.\n");
         return 1;
-    }
+    };
 
     Pokemon oponente_pokemon = escolher_oponente_pokemon(jogador_pokemon);
 
-    //Teste da função escolher_oponente_pokemon, apagar futuramente
-    printf("\nPokemon do jogador: %s", jogador_pokemon.nome);
-    printf("\nPokemon do oponente: %s", oponente_pokemon.nome);
+    switch (
+        batalha(jogador_pokemon, oponente_pokemon)) // Batalha e seus resultados
+    {
+    case 0:
+    // Provisorio
+        printf("\nFIM POR ENQUANTO!"); 
+    // Correto
+        // printf("\nVoce %sperdeu%s a batalha contra %sBarry%s!" Resetar, Vermelho, Resetar, Negrito Cinza, Resetar); 
+        break;
+    case 1:
+        printf("\nVoce %sganhou%s a batalha contra %sBarry%s!" Resetar, Verde, Resetar, Negrito Cinza, Resetar);
+        break;
+    case 2:
+        printf("\nVoce %sdesistiu%s da batalha contra %sBarry%s!" Resetar, Cinza,Resetar, Negrito Cinza, Resetar);
+        break;
+    default:
+        break;
+    }
 
     return 0;
 }
