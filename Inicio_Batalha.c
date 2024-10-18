@@ -13,8 +13,11 @@ int batalha_total(Pokemon jogador_pokemon, Pokemon oponente_pokemon){
     printf("\nRival %sBarry%s manda %s%s%s para batalhar!" Resetar, Negrito Cinza, Resetar, cor_o, oponente_pokemon.nome, Resetar);
     printf("\nVoce manda %s%s%s!\n" Resetar, cor_j, jogador_pokemon.nome, Resetar);
 
+    iniciar_historico(&jogador_pokemon, &oponente_pokemon);
+        
   // Codigo da batalha
-    int escolha;
+    int escolha_j;
+    int escolha_o;
     char desistir;
     while(jogador_pokemon.vida > 0 || oponente_pokemon.vida > 0){
         if(jogador_pokemon.vida > jogador_max_vida / 2){
@@ -36,20 +39,23 @@ int batalha_total(Pokemon jogador_pokemon, Pokemon oponente_pokemon){
         printf("\nSua vida: %s%d" Resetar, cor_vida_jogador, jogador_pokemon.vida);
         printf(" || Vida do Oponente: %s%d" Resetar, cor_vida_oponente, oponente_pokemon.vida);
         
-        printf(Negrito "\n1- Ataque Normal \n2- Ataque Especial (%d usos restantes) \n3- Curar (%d usos restantes) \n4- Desistir \nSua escolha: " Resetar, jogador_pokemon.qtd_especial, jogador_pokemon.qtd_cura);
-        scanf("%d", &escolha);
+        printf(Negrito "\n1- Ataque Normal \n2- Ataque Especial (%d usos restantes) \n3- Usar pocao de cura (%d usos restantes) \n4- Desistir \nSua escolha: " Resetar, jogador_pokemon.qtd_especial, jogador_pokemon.qtd_cura);
+        scanf("%d", &escolha_j);
 
-        switch (escolha)
+        // Ataque do jogador
+        switch (escolha_j)
         {
         case 1:
             oponente_pokemon.vida -= jogador_pokemon.ataque;
             printf("Voce realiza um ataque e causa um pouco de dano ao seu oponente!\n");
+            salvar_ataque(jogador_pokemon.nome, oponente_pokemon.nome, jogador_pokemon.ataque, oponente_pokemon.vida - jogador_pokemon.ataque);
             break;
         case 2:
             if(jogador_pokemon.qtd_especial > 0){
                 oponente_pokemon.vida -= jogador_pokemon.ataque_especial;
                 jogador_pokemon.qtd_especial -= 1;
                 printf("Voce realiza um ataque especial e causa bastante dano ao seu oponente!\n");
+                salvar_ataque(jogador_pokemon.nome, oponente_pokemon.nome, jogador_pokemon.ataque_especial, oponente_pokemon.vida - jogador_pokemon.ataque_especial);
                 break;
             }else{
                 printf("Voce tenta utilizar um ataque especial, mas nao consegue mais.\n");
@@ -57,20 +63,23 @@ int batalha_total(Pokemon jogador_pokemon, Pokemon oponente_pokemon){
             }
         case 3:
             if(jogador_pokemon.qtd_cura <= 0){
-                printf("Voce tenta se curar, mas nao consegue mais.\n");
+                printf("Voce tenta usar uma pocao, mas nao tem mais nenhuma.\n");
                 continue;
-            }else if(jogador_pokemon.vida = jogador_max_vida){
-                printf("Voce tenta se curar, mas sua vida ja esta cheia.\n");
+            }else if(jogador_pokemon.vida == jogador_max_vida){
+                printf("Voce tenta usar uma pocao, mas sua vida ja esta cheia.\n");
                 continue;
             }else if(jogador_pokemon.vida + jogador_pokemon.cura >= jogador_max_vida){
+                salvar_cura(jogador_pokemon.nome, jogador_max_vida - jogador_pokemon.vida, jogador_max_vida);
                 jogador_pokemon.vida = jogador_max_vida;
                 jogador_pokemon.qtd_cura -= 1;
-                printf("Voce se cura, recuperando sua vida totalmente!\n");
+                printf("Voce usa uma pocao, recuperando sua vida totalmente!\n");
+                
                 break;
             }else{
                 jogador_pokemon.vida += jogador_pokemon.cura;
                 jogador_pokemon.qtd_cura -= 1;
-                printf("Voce se cura, recuperando um pouco de vida!\n");
+                printf("Voce usa uma pocao, recuperando um pouco de vida!\n");
+                salvar_cura(jogador_pokemon.nome, jogador_pokemon.cura, jogador_pokemon.vida);
                 break;
             }
         case 4:
@@ -87,14 +96,40 @@ int batalha_total(Pokemon jogador_pokemon, Pokemon oponente_pokemon){
         default:
             printf("Escolha invalida! Tente novamente.\n");
             continue;
-        }  
+        } 
+        
+        if(oponente_pokemon.vida <= 0){
+            printf("\nVoce %sganhou%s a batalha contra %sBarry%s!" Resetar, Verde, Resetar, Negrito Cinza, Resetar);
+            finalizar_historico(jogador_pokemon.nome);
+            return 0;
+        }
+
+        // Ataque do oponente
+        while(1){
+            escolha_o = rand() % 3;
+            if(escolha_o == 0){
+                jogador_pokemon.vida -= oponente_pokemon.ataque;
+                printf("Seu oponente realiza um ataque e causa um pouco de dano!\n");
+                salvar_ataque(oponente_pokemon.nome, jogador_pokemon.nome, oponente_pokemon.ataque, jogador_pokemon.vida - oponente_pokemon.ataque);
+                break;
+            }else if(escolha_o == 1 && oponente_pokemon.qtd_especial > 0){
+                jogador_pokemon.vida -= oponente_pokemon.ataque_especial;
+                oponente_pokemon.qtd_especial -= 1;
+                printf("Seu oponente realiza um ataque especial e causa bastante dano!\n");
+                salvar_ataque(oponente_pokemon.nome, jogador_pokemon.nome, oponente_pokemon.ataque_especial, jogador_pokemon.vida - oponente_pokemon.ataque_especial);
+                break;
+            }else if(escolha_o == 2 && oponente_pokemon.qtd_cura > 0 && oponente_pokemon.vida <= max_vida - oponente_pokemon.cura){
+                oponente_pokemon.vida += oponente_pokemon.cura;
+                oponente_pokemon.qtd_cura -= 1;
+                printf("Seu oponente usa uma pocao, recuperando um pouco de vida!\n");
+                salvar_cura(oponente_pokemon.nome, oponente_pokemon.cura, oponente_pokemon.vida);
+                break;
+            }
+        }
         
         if(jogador_pokemon.vida <= 0){
             printf("\nVoce %sperdeu%s a batalha contra %sBarry%s!" Resetar, Vermelho, Resetar, Negrito Cinza, Resetar);
-            return 0;
-        }
-        if(oponente_pokemon.vida <= 0){
-            printf("\nVoce %sganhou%s a batalha contra %sBarry%s!" Resetar, Verde, Resetar, Negrito Cinza, Resetar);
+            finalizar_historico(oponente_pokemon.nome);
             return 0;
         }
     }
